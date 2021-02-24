@@ -48,7 +48,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Gameplay")
 	UAnimSequence* FireAnimation;
 
-	UPROPERTY(BlueprintReadWrite, VisibleAnywhere,Category = "Gameplay")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 	bool bIsHoldingObjective;
 
 protected:
@@ -63,6 +63,9 @@ protected:
 	void MoveRight(float Val);
 
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
+
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere,Category = "Gameplay")
+	class UPawnNoiseEmitterComponent* NoiseEmitterComponent;
 
 public:
 	/** Returns Mesh1P subobject **/
