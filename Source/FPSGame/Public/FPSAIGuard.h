@@ -8,6 +8,16 @@
 
 #include "FPSAIGuard.generated.h"
 
+UENUM(Blueprintable)
+enum class EAIGuardState : uint8
+{
+	Idle,
+
+	Suspicicous,
+
+	Alerted,
+};
+
 UCLASS()
 class FPSGAME_API AFPSAIGuard : public ACharacter
 {
@@ -36,5 +46,23 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Sensor")
     void OnHearPawn(APawn* HeardPawn, const FVector& Location, float Volume);
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	FRotator InitialRot;
+
+	UFUNCTION(BlueprintCallable)
+	void ResetPosition();
+
+	UPROPERTY()
+	FTimerHandle TimerHandle_ResetLocation;
+
+	UPROPERTY()
+	EAIGuardState GuardState;
+
+	UFUNCTION()
+	void SetGuardState(EAIGuardState NewState);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnStateChange(EAIGuardState NewState);
 
 };

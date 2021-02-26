@@ -16,7 +16,7 @@ AFPSGameMode::AFPSGameMode()
 	HUDClass = AFPSHUD::StaticClass();
 }
 
-void AFPSGameMode::CompleteMission(APawn* Actor)
+void AFPSGameMode::CompleteMission(APawn* Actor, bool bHasBeenDetected)
 {
 	if (Actor != nullptr)
 	{
@@ -25,15 +25,31 @@ void AFPSGameMode::CompleteMission(APawn* Actor)
 		APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 		if (PC)
 		{
-			//AActor* View;
-
-			TArray<AActor*> ReturnedActors;
-			UGameplayStatics::GetAllActorsOfClass(GetWorld(), NewCameraView, ReturnedActors);
-
-			if (ReturnedActors.Num() > 0)
+			if (bHasBeenDetected == false)
 			{
-				PC->SetViewTargetWithBlend(ReturnedActors[0], 0.5f, EViewTargetBlendFunction::VTBlend_Cubic);
+				TArray<AActor*> ReturnedActors;
+				UGameplayStatics::GetAllActorsOfClass(GetWorld(), NewCameraView, ReturnedActors);
+
+				if (ReturnedActors.Num() > 0)
+				{
+					PC->SetViewTargetWithBlend(ReturnedActors[0], 0.5f, EViewTargetBlendFunction::VTBlend_Cubic);
+				}
+			}else
+			{
+				TArray<AActor*> ReturnedActors;
+				UGameplayStatics::GetAllActorsOfClass(GetWorld(), NewCameraView, ReturnedActors);
+
+				if (ReturnedActors.Num() > 0)
+				{
+					PC->SetViewTargetWithBlend(ReturnedActors[0], 0.5f, EViewTargetBlendFunction::VTBlend_Cubic);
+				}
+				AFPSCharacter* Player = Cast<AFPSCharacter>(Actor);
+				if (Player)
+				{
+					Player->bIsDetected = true;
+				}
 			}
+			
 		}
 	}
 }

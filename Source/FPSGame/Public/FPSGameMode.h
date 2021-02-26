@@ -16,7 +16,7 @@ public:
 	AFPSGameMode();
 
 	UFUNCTION()
-	void CompleteMission(APawn* Actor);
+	void CompleteMission(APawn* Actor, bool bHasBeenDetected);
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Gameplay")
 	void OnMissionCompleted(APawn* Actor);
