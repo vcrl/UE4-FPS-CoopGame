@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
 #include "GameFramework/Character.h"
 #include "Perception/PawnSensingComponent.h"
 
@@ -65,4 +66,17 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnStateChange(EAIGuardState NewState);
 
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Patrol Points")
+	AActor* PatrolPoint1;
+
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Patrol Points")
+	AActor* PatrolPoint2;
+
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Patrol Points")
+	AActor* NextPatrolPoint;
+
+	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	class UBlackboardComponent* BB;
 };

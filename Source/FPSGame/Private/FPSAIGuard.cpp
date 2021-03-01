@@ -3,9 +3,10 @@
 
 #include "FPSAIGuard.h"
 
-
+#include "BehaviorTree/BlackboardComponent.h"
 #include "FPSGameMode.h"
-#include "Kismet/KismetMathLibrary.h"
+#include "Blueprint/AIBlueprintHelperLibrary.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 
 // Sets default values
@@ -14,6 +15,7 @@ AFPSAIGuard::AFPSAIGuard()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	SensingComp = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("Sensing Component"));
+	BB = CreateDefaultSubobject<UBlackboardComponent>(TEXT("Black Board"));
 	GuardState = EAIGuardState::Idle;
 
 }
@@ -24,6 +26,7 @@ void AFPSAIGuard::BeginPlay()
 	Super::BeginPlay();
 	SensingComp->OnSeePawn.AddDynamic(this, &AFPSAIGuard::OnSeePawn);
 	SensingComp->OnHearNoise.AddDynamic(this, &AFPSAIGuard::OnHearPawn);
+	
 	InitialRot = GetActorRotation();
 	
 }
@@ -32,6 +35,9 @@ void AFPSAIGuard::BeginPlay()
 void AFPSAIGuard::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	BB = UAIBlueprintHelperLibrary::GetBlackboard(this);
+	BB->SetValueAsObject(UKismetSystemLibrary::MakeLiteralName("PatrolPoint"), NextPatrolPoint);
+	
 
 }
 
@@ -92,4 +98,18 @@ void AFPSAIGuard::SetGuardState(EAIGuardState NewState)
 
 	GuardState = NewState;
 	OnStateChange(GuardState);
+}
+
+void AFPSAIGuard::NotifyActorBeginOverlap(AActor* OtherActor)
+{
+	Super::NotifyActorBeginOverlap(OtherActor);
+
+	if (OtherActor == PatrolPoint1)
+	{
+		NextPatrolPoint = PatrolPoint2;
+	}
+	if (OtherActor == PatrolPoint2)
+	{
+		NextPatrolPoint = PatrolPoint1;
+	}
 }
